@@ -1,16 +1,29 @@
 package tictactoe;
 
 public class Game {
-    private char playerSymbol;
+    public static final char X = 'X';
+    private static final char O = 'O';
+    private static final int HUMAN = 0;
+    private static final int AI_EASY = 1;
 
     public void start() {
         GameBoard gameBoard = new GameBoard();
-        playerSymbol = gameBoard.initField();
-        gameBoard.printField();
         Player player = new Player();
-        player.makeTurn(gameBoard, playerSymbol);
-        gameBoard.printField();
-        gameBoard.checkField();
 
+        char playerSymbol = X;
+        int playerLevel = HUMAN;
+
+        gameBoard.initField();
+        gameBoard.printField();
+        while (true) {
+            player.makeTurn(gameBoard, playerSymbol, playerLevel);
+            gameBoard.printField();
+            if (gameBoard.checkField()) {
+                break;
+            } else {
+                playerSymbol = (playerSymbol == X ? O : X);
+                playerLevel = (playerLevel == HUMAN ? AI_EASY : HUMAN);
+            }
+        }
     }
 }

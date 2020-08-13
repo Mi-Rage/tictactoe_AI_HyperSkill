@@ -1,43 +1,30 @@
 package tictactoe;
 
-import java.util.Scanner;
-
 public class GameBoard {
     private static final int SIZE = 3;
     private static final char X = 'X';
     private static final char O = 'O';
+    private static final char EMPTY = '_';
 
     public char[][] gameField;
-    private static Scanner scanner = new Scanner(System.in);
 
     public static int getSIZE() {
         return SIZE;
     }
 
-    public char initField() {
-        System.out.print("Enter cells:");
-
-        String cells = scanner.nextLine();
-
+    /**
+     * Make empty game field
+     */
+    public void initField() {
         gameField = new char[SIZE][SIZE];
-
-        int count = 0;
-        int countX = 0;
-        int countO = 0;
-
         for (int i = 0; i < SIZE * SIZE; i++) {
-            gameField[i / SIZE][i % SIZE] = cells.charAt(count);
-            if (cells.charAt(count) == X) {
-                countX++;
-            } else if(cells.charAt(count) == O) {
-                countO++;
-            }
-            count++;
+            gameField[i / SIZE][i % SIZE] = EMPTY;
         }
-
-        return countX > countO ? O : X;
     }
 
+    /**
+     * Print game field
+     */
     public void printField() {
         System.out.println("---------");
         for (int i = 0; i < SIZE; i++) {
@@ -50,8 +37,11 @@ public class GameBoard {
         System.out.println("---------");
     }
 
+    /**
+     * Check possible WIN or DRAW or Game not finished
+     * @return true - if WIN or DRAW, false - if not finished
+     */
     public boolean checkField() {
-
         //check win & impossible win
         if (checkDiagWin(X) || checkRowColWin(X)) {
             System.out.println("X wins");
@@ -65,8 +55,7 @@ public class GameBoard {
         for (int i = 0; i < SIZE; i++) {
             for (int j = 0; j < SIZE; j++) {
                 if (gameField[i][j] == ' ' || gameField[i][j] == '_') {
-                    System.out.println("Game not finished");
-                    return true;
+                    return false;
                 }
             }
         }
@@ -74,6 +63,11 @@ public class GameBoard {
         return true;
     }
 
+    /**
+     * Diagonal win?
+     * @param symbol - check this symbol
+     * @return true if WIN
+     */
     private boolean checkDiagWin(char symbol) {
         boolean leftRightDiag = true;
         boolean rightLeftDiag = true;
@@ -83,13 +77,14 @@ public class GameBoard {
             rightLeftDiag &= (gameField[SIZE - i - 1][i] == symbol);
         }
 
-        if (leftRightDiag || rightLeftDiag) {
-            System.out.println(symbol + " wins");
-            return true;
-        }
-        return false;
+        return leftRightDiag || rightLeftDiag;
     }
 
+    /**
+     * ROW or COLUMN WIN?
+     * @param symbol - check this symbol
+     * @return true if WIN
+     */
     private boolean checkRowColWin(char symbol) {
         boolean cols, rows;
 
