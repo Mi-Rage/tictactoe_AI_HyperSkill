@@ -7,22 +7,22 @@ public class Player {
     public static Scanner scanner = new Scanner(System.in);
     private static final char X = 'X';
     private static final char O = 'O';
-    private static final int HUMAN = 0;
-    private static final int AI_EASY = 1;
 
-    private char symbol;
-    private String level;
+    private final char symbol;
+    private final String level;
 
+    /**
+     * Object Player constructor with her player symbol and difficulty level
+     * @param symbol - this player symbol (X or O)
+     * @param level - difficulty level (as String "easy", "medium" or "hard")
+     */
     public Player(char symbol, String level) {
         this.symbol = symbol;
         this.level = level;
     }
 
-
-
     /**
-     * Make a move on the playing field with the player's symbol
-     * and the selected level of difficulty
+     * Make a move on the playing field with the selected level of difficulty
      * @param gameBoard - this game board
      */
     public void makeTurn(GameBoard gameBoard) {
@@ -37,7 +37,7 @@ public class Player {
     }
 
     /**
-     * Make a move on the playing field of HUMAN
+     * Make a move on the playing field of user as human
      * @param gameBoard - this game board
      */
     public void humanTurn(GameBoard gameBoard) {
@@ -72,7 +72,7 @@ public class Player {
      * @param gameBoard - this game board
      * @param x - coordinates to check
      * @param y - coordinates to check
-     * @return - passed onr not coordinates
+     * @return - boolean, passed onr not coordinates
      */
     public boolean isPossibleTurn(GameBoard gameBoard, int x, int y) {
         if (x < 0 || x > GameBoard.getSIZE() - 1 || y < 0 || y > GameBoard.getSIZE() - 1) {
