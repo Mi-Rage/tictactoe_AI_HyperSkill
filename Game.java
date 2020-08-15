@@ -7,6 +7,7 @@ public class Game {
     private static final char O = 'O';
     private static final Scanner scanner = new Scanner(System.in);
     private static String[] command;
+    private int result = 0;
 
     public void start() {
         GameBoard gameBoard = new GameBoard();
@@ -28,15 +29,18 @@ public class Game {
             while (true) {
                 player1.makeTurn(gameBoard);
                 gameBoard.printField();
-                if (gameBoard.checkField()) {
+                result = gameBoard.checkField();
+                if (result != 0) {
                     break;
                 }
                 player2.makeTurn(gameBoard);
                 gameBoard.printField();
-                if (gameBoard.checkField()) {
+                result = gameBoard.checkField();
+                if (result != 0) {
                     break;
                 }
             }
+            printResult(result);
         }
     }
 
@@ -53,6 +57,20 @@ public class Game {
             } else {
                 break;
             }
+        }
+    }
+
+    public static void printResult(int result) {
+        switch (result) {
+            case 1 :
+                System.out.println("X wins");
+                break;
+            case 2 :
+                System.out.println("O wins");
+                break;
+            case 3 :
+                System.out.println("Draw");
+                break;
         }
     }
 

@@ -156,14 +156,7 @@ public class Player {
                 if (gameBoard.gameField[i][j] == EMPTY) {
                     gameBoard.gameField[i][j] = symbol;
 
-                    if (gameBoard.checkField()) {
-                        x = i;
-                        y = j;
-                        foundWin = true;
-                        break;
-                    }
-                    gameBoard.gameField[i][j] = (symbol == X) ? O : X;
-                    if (gameBoard.checkField()) {
+                    if (gameBoard.checkField() != 0) {
                         x = i;
                         y = j;
                         foundWin = true;

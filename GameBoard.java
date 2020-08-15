@@ -41,26 +41,23 @@ public class GameBoard {
      * Check possible WIN or DRAW or Game not finished
      * @return true - if WIN or DRAW, false - if not finished
      */
-    public boolean checkField() {
+    public int checkField() {
         //check win & impossible win
         if (checkDiagWin(X) || checkRowColWin(X)) {
-            System.out.println("X wins");
-            return true;
+            return 1; // X wins
         } else if (checkDiagWin(O) || checkRowColWin(O)) {
-            System.out.println("O wins");
-            return true;
+            return 2; // O wins
         }
 
         //check draw or not finished
         for (int i = 0; i < SIZE; i++) {
             for (int j = 0; j < SIZE; j++) {
                 if (gameField[i][j] == ' ' || gameField[i][j] == '_') {
-                    return false;
+                    return 0; // Not finished
                 }
             }
         }
-        System.out.println("Draw");
-        return true;
+        return 3; // Draw
     }
 
     /**
