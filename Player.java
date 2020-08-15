@@ -7,14 +7,16 @@ public class Player {
     public static Scanner scanner = new Scanner(System.in);
     private static final char X = 'X';
     private static final char O = 'O';
+    private static final char EMPTY = '_';
 
     private final char symbol;
     private final String level;
 
     /**
      * Object Player constructor with her player symbol and difficulty level
+     *
      * @param symbol - this player symbol (X or O)
-     * @param level - difficulty level (as String "easy", "medium" or "hard")
+     * @param level  - difficulty level (as String "easy", "medium" or "hard")
      */
     public Player(char symbol, String level) {
         this.symbol = symbol;
@@ -23,6 +25,7 @@ public class Player {
 
     /**
      * Make a move on the playing field with the selected level of difficulty
+     *
      * @param gameBoard - this game board
      */
     public void makeTurn(GameBoard gameBoard) {
@@ -33,11 +36,17 @@ public class Player {
             case "easy":
                 easyAiTurn(gameBoard);
                 break;
+            case "medium":
+                mediumAiTurn(gameBoard);
+                break;
+            default:
+                System.out.println("[PLAYER] Wrong level!");
         }
     }
 
     /**
      * Make a move on the playing field of user as human
+     *
      * @param gameBoard - this game board
      */
     public void humanTurn(GameBoard gameBoard) {
@@ -69,9 +78,10 @@ public class Player {
     /**
      * We check whether it is possible to descend on the transmitted
      * coordinates and if necessary, output a message
+     *
      * @param gameBoard - this game board
-     * @param x - coordinates to check
-     * @param y - coordinates to check
+     * @param x         - coordinates to check
+     * @param y         - coordinates to check
      * @return - boolean, passed onr not coordinates
      */
     public boolean isPossibleTurn(GameBoard gameBoard, int x, int y) {
@@ -93,10 +103,20 @@ public class Player {
     /**
      * Make a move on the playing field of AI EASY
      * Use random coordinates
+     *
      * @param gameBoard - this game board
      */
     public void easyAiTurn(GameBoard gameBoard) {
         System.out.println("Making move level \"easy\"");
+        this.randomTurn(gameBoard);
+    }
+
+    /**
+     * Getting random coordinates for turn AI
+     *
+     * @param gameBoard - this game board
+     */
+    public void randomTurn(GameBoard gameBoard) {
         while (true) {
             int randomX = (int) (Math.random() * GameBoard.getSIZE());
             int randomY = (int) (Math.random() * GameBoard.getSIZE());
@@ -108,4 +128,58 @@ public class Player {
         }
     }
 
+    /**
+     * Make turn with medium AI.
+     * Looking for the best turn and if it is not - turn randomly
+     * @param gameBoard - this game board
+     */
+    public void mediumAiTurn(GameBoard gameBoard) {
+        if (!findMediumTurn(gameBoard)) {
+            randomTurn(gameBoard);
+        }
+    }
+
+    /**
+     * Check each cell for a possible win or an opponent's win.
+     * @param gameBoard this game board
+     * @return true if found best turn
+     */
+    public boolean findMediumTurn(GameBoard gameBoard) {
+        int x = -1;
+        int y = -1;
+        boolean foundWin = false;
+
+        System.out.println("Making move level \"medium\"");
+
+        for (int i = 0; i < GameBoard.getSIZE(); i++) {
+            for (int j = 0; j < GameBoard.getSIZE(); j++) {
+                if (gameBoard.gameField[i][j] == EMPTY) {
+                    gameBoard.gameField[i][j] = symbol;
+
+                    if (gameBoard.checkField()) {
+                        x = i;
+                        y = j;
+                        foundWin = true;
+                        break;
+                    }
+                    gameBoard.gameField[i][j] = (symbol == X) ? O : X;
+                    if (gameBoard.checkField()) {
+                        x = i;
+                        y = j;
+                        foundWin = true;
+                        break;
+                    }
+                    gameBoard.gameField[i][j] = EMPTY;
+                }
+            }
+            if (foundWin) {
+                break;
+            }
+        }
+        if (foundWin) {
+            gameBoard.gameField[x][y] = symbol;
+            return true;
+        }
+        return false;
+    }
 }

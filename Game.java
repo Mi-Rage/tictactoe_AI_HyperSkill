@@ -11,27 +11,31 @@ public class Game {
     public void start() {
         GameBoard gameBoard = new GameBoard();
 
-        getCommand();
-        if (command[0].equals("exit")) {
-            System.exit(0);
-        }
-
-        Player player1 = new Player(X, command[1]);
-        Player player2 = new Player(O, command[2]);
-
-        gameBoard.initField();
-        gameBoard.printField();
 
         while (true) {
-            player1.makeTurn(gameBoard);
-            gameBoard.printField();
-            if (gameBoard.checkField()) {
-                break;
+
+            getCommand();
+            if (command[0].equals("exit")) {
+                System.exit(0);
             }
-            player2.makeTurn(gameBoard);
+
+            Player player1 = new Player(X, command[1]);
+            Player player2 = new Player(O, command[2]);
+
+            gameBoard.initField();
             gameBoard.printField();
-            if (gameBoard.checkField()) {
-                break;
+
+            while (true) {
+                player1.makeTurn(gameBoard);
+                gameBoard.printField();
+                if (gameBoard.checkField()) {
+                    break;
+                }
+                player2.makeTurn(gameBoard);
+                gameBoard.printField();
+                if (gameBoard.checkField()) {
+                    break;
+                }
             }
         }
     }
