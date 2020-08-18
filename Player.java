@@ -1,5 +1,7 @@
 package tictactoe;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Player {
@@ -38,6 +40,9 @@ public class Player {
                 break;
             case "medium":
                 mediumAiTurn(gameBoard);
+                break;
+            case "hard":
+                hardAiTurn(gameBoard);
                 break;
             default:
                 System.out.println("[PLAYER] Wrong level!");
@@ -140,7 +145,7 @@ public class Player {
     }
 
     /**
-     * Check each cell for a possible win or an opponent's win.
+     * Check each cell for a possible win with check opponent's win.
      * @param gameBoard this game board
      * @return true if found best turn
      */
@@ -162,6 +167,13 @@ public class Player {
                         foundWin = true;
                         break;
                     }
+                    gameBoard.gameField[i][j] = (symbol == X) ? O : X;
+                    if (gameBoard.checkField() != 0) {
+                        x = i;
+                        y = j;
+                        foundWin = true;
+                        break;
+                    }
                     gameBoard.gameField[i][j] = EMPTY;
                 }
             }
@@ -175,4 +187,134 @@ public class Player {
         }
         return false;
     }
+
+    /**
+     * Check all possible moves using the minimax algorithm
+     * @param gameBoard - this game board
+     */
+    public void hardAiTurn(GameBoard gameBoard) {
+        System.out.println("Making move level \"hard\"");
+
+        Move bestMove = minimax(gameBoard.gameField, symbol, symbol);
+        gameBoard.gameField[bestMove.index[0]][bestMove.index[1]] = symbol;
+    }
+
+    /**
+     * Implementation of the minimax algorithm
+     * @param gameField - the state of the playing field where we are looking for the best move
+     * @param callingPlayer - character of the player being checked
+     * @param currentPlayer - symbol of current player
+     * @return move object - the best move in this state of the playing field
+     */
+    public Move minimax(char[][] gameField, char callingPlayer, char currentPlayer) {
+        List<Move> moves = new ArrayList<>();
+        char enemySymbol = (callingPlayer == X) ? O : X;
+        char callingSymbol = (callingPlayer == X) ? X : O;
+        char enemyPlayer = (currentPlayer == X) ? O : X;
+
+        // Counting the score of this move
+        if (isWin(gameField, enemySymbol)) {
+            return new Move(-10);
+        } else if (isWin(gameField, callingSymbol)) {
+            return new Move(10);
+        } else if (!isEmptyCellsLeft(gameField)) {
+            return new Move(0);
+        }
+
+        for (int i = 0; i < GameBoard.getSIZE(); i++) {
+            for (int j = 0; j < GameBoard.getSIZE(); j++) {
+                if (gameField[i][j] == EMPTY) {
+                    // let's make a possible move
+                    Move move = new Move();
+                    move.index = new int[]{i, j};
+                    gameField[i][j] = currentPlayer;
+                    Move result = minimax(gameField, callingPlayer, enemyPlayer);
+                    // save the score for the minimax
+                    move.score = result.score;
+                    // then revert the occupied place back to empty, so next guesses can go on
+                    gameField[i][j] = EMPTY;
+                    moves.add(move);
+                }
+            }
+        }
+
+        // Choose the move with the highest score
+        int bestMove = 0;
+
+        if (currentPlayer == callingPlayer) {
+            int bestScore = -10000;
+            for (int i = 0; i < moves.size(); i++) {
+                if (moves.get(i).score > bestScore) {
+                    bestScore = moves.get(i).score;
+                    bestMove = i;
+                }
+            }
+        } else {
+            int bestScore = 10000;
+            for (int i = 0; i < moves.size(); i++) {
+                if (moves.get(i).score < bestScore) {
+                    bestScore = moves.get(i).score;
+                    bestMove = i;
+                }
+            }
+        }
+
+        // minimax returns the best move to the latest function caller
+        return moves.get(bestMove);
+    }
+
+    /**
+     * Check is empty cells left on this game board
+     * @param gameField - this game board
+     * @return boolean true if got empty cell
+     */
+    private static boolean isEmptyCellsLeft(char[][] gameField) {
+        boolean gotEmptiesCells = false;
+        for (int i = 0; i < GameBoard.getSIZE(); i++) {
+            for (int j = 0; j < GameBoard.getSIZE(); j++) {
+                if (gameField[i][j] == EMPTY) {
+                    gotEmptiesCells = true;
+                    break;
+                }
+            }
+        }
+        return gotEmptiesCells;
+    }
+
+
+    /**
+     * Check possible win on this game board for this player
+     * @param gameField - this game board
+     * @param playerSymbol - checked player symbol
+     * @return boolean true if player win
+     */
+    private static boolean isWin(char[][] gameField, char playerSymbol) {
+        boolean leftRightDiag = true;
+        boolean rightLeftDiag = true;
+
+        for (int i = 0; i < GameBoard.getSIZE(); i++) {
+            leftRightDiag &= (gameField[i][i] == playerSymbol);
+            rightLeftDiag &= (gameField[GameBoard.getSIZE() - i - 1][i] == playerSymbol);
+        }
+
+        boolean cols = false;
+        boolean rows = false;
+
+        for (int col = 0; col < GameBoard.getSIZE(); col++) {
+            cols = true;
+            rows = true;
+
+            for (int row = 0; row < GameBoard.getSIZE(); row++) {
+                cols &= (gameField[col][row] == playerSymbol);
+                rows &= (gameField[row][col] == playerSymbol);
+            }
+            if (cols || rows) {
+                break;
+            }
+        }
+
+        return leftRightDiag || rightLeftDiag || cols || rows;
+    }
 }
+
+

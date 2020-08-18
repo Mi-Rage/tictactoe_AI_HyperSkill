@@ -7,11 +7,12 @@ public class Game {
     private static final char O = 'O';
     private static final Scanner scanner = new Scanner(System.in);
     private static String[] command;
-    private int result = 0;
 
+    /**
+     * The entire gameplay is here
+     */
     public void start() {
         GameBoard gameBoard = new GameBoard();
-
 
         while (true) {
 
@@ -26,6 +27,7 @@ public class Game {
             gameBoard.initField();
             gameBoard.printField();
 
+            int result;
             while (true) {
                 player1.makeTurn(gameBoard);
                 gameBoard.printField();
@@ -44,6 +46,9 @@ public class Game {
         }
     }
 
+    /**
+     * Getting the game initialization command
+     */
     public static void getCommand() {
         System.out.print("Input command: ");
 
@@ -60,6 +65,10 @@ public class Game {
         }
     }
 
+    /**
+     * Output the game result to the console
+     * @param result - int, result of the game
+     */
     public static void printResult(int result) {
         switch (result) {
             case 1 :

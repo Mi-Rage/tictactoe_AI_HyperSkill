@@ -39,7 +39,7 @@ public class GameBoard {
 
     /**
      * Check possible WIN or DRAW or Game not finished
-     * @return true - if WIN or DRAW, false - if not finished
+     * @return int 1 - if X win, 2 - if O win, 3 - if Draw, 0 - if not finished
      */
     public int checkField() {
         //check win & impossible win
